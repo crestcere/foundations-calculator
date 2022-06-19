@@ -1,4 +1,17 @@
+.container_1 {
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* border: solid red 1px; */
+}
+
 .b_row {
-    display: flex;
-    border: none;
+    /* display: flex; */
+    /* border: solid black 1px; */
+    margin-bottom: 0px;
+}
+
+.zeros {
+    margin: 0px;
+    /* border: solid yellow 1px; */
+    /* display: flexbox; */
 }
