@@ -1,31 +1,29 @@
 function operate() {
-    switch (arguments[0]) {
-        case "+":
-            result += +value["input" + (val_index - 1)].join("") + +value["input" + val_index].join("");
-            break;
-        case "-":
-            result -= +value["input" + (val_index - 1)].join("") - +value["input" + val_index].join("");
-            // result += +value["input" + val_index].join("") - +value["input" + (val_index - 1)].join("");
-        default:
-            break;
+    for (let i = 1; i <= operator_index; i++) {
+        switch(value["input_op" + i].join("")) {
+            case "+":
+                result = +value["input" + i].join("") + +value["input" + (i + 1)].join("");
+                value["input" + (i + 1)] = [];
+                value["input" + (i + 1)][0] = result;
+                break;
+            case "-":
+                result = +value["input" + i].join("") - +value["input" + (i + 1)].join("");
+                value["input" + (i + 1)] = [];
+                value["input" + (i + 1)][0] = result;
+                break;
+            case "/":
+                result = +value["input" + i].join("") / +value["input" + (i + 1)].join("");
+                value["input" + (i + 1)] = [];
+                value["input" + (i + 1)][0] = result;
+                break;
+            case "*":
+                result = +value["input" + i].join("") * +value["input" + (i + 1)].join("");
+                value["input" + (i + 1)] = [];
+                value["input" + (i + 1)][0] = result;
+                break;
+        }
     }
-    // console.log(Object.keys(value).length);
-    // console.log("result: " + result);
     console.table(value);
-}
-const functions = {
-    add() {
-        return arguments[0] + arguments[1];
-    },
-    subtract() {
-        return arguments[0] - arguments[1];
-    },
-    multiply() {
-        return arguments[0] * arguments[1];
-    },
-    divide() {
-        return arguments[0] / arguments[1];
-    }
 }
 
 // Display container create
@@ -86,7 +84,7 @@ for (let x = 0; x < 3; x++) {
     }
 }
 
-// Tempelement
+// Temp Element
 function tempElement(classname, mounts, type, many) {
     let classnames = classname;
     (typeof many == "undefined") ? (many = 1) : (many);
@@ -108,16 +106,15 @@ let operator = {};
 
 let val_index = 1;
 
-let operator_index = 1;
+let operator_index = 0;
 
 let result = 0;
 
-// Numbers event listener
+// Log pressed numbers, Numbers event listener,
 for (let i = 1; i < 10; i++) {
     let b_column = document.getElementById("b_column#" + i);
     b_column.addEventListener("click", () => {
         let a = "input" + val_index;
-        // console.log("a: " + a);
         value[a].push(b_column.textContent);
         display_value(value[a].join(""));
     })
@@ -125,63 +122,59 @@ for (let i = 1; i < 10; i++) {
 
 // Zero button event listener;
 document.getElementById("zeros#0").addEventListener("click", () => {
-    let a = "input" + val_index;
-    value[a].push("0");
-    display_value(value[a].join(""));
+    if (value["input_op" + operator_index] == "/" ) {
+        alert("You bitch!");
+    } else {
+        value["input" + val_index].push("0");
+        display_value(value[a].join(""));
+    }
+    // let a = "input" + val_index;
 })
 
 // Clear button event listener;
-let c_button = document.getElementById("zeros#1");
-c_button.addEventListener("click", () => {
+function clear() {
     value = {
         input1 : []
     };
     val_index = 1;
+    operator_index = 0;
     result = 0;
+}
+let c_button = document.getElementById("zeros#1");
+c_button.addEventListener("click", () => {
+    clear();
     display_value("0");
 })
 
+// Index creator
 function value_create() {
     if (arguments[0] == "val") {
-        // val_index++;
         let a = "input" + val_index;
         value[a] = [];
     }
     else if (arguments[0] == "op") {
+        operator_index++;
         let b = "input_op" + operator_index;
         value[b] = [];
         value[b].push(arguments[1]);
-        console.log("op index: " + operator_index);
-        console.log("val index: " + val_index);
-        operator_index++;
         val_index++;
     }
 }
 
-// Add operator event listener;
-let add = document.getElementsByClassName("functions")[0];
-    add.addEventListener("click", () => {
-    // value_create("op", add.textContent);
-    if (value["input" + val_index].length > 0) {
-        value_create("op", "+");
+// Functions
+for (let i = 1; i <= 4; i++) {
+    let funcs = document.getElementById("functions#" + i);
+    funcs.addEventListener("click", () => {
+        value_create("op", funcs.textContent);
         value_create("val");
-        operate("+");
         display_value("0");
         console.table(value);
-    }
-})
-
-// Subtract operator event listener;
-let subtract = document.getElementsByClassName("functions")[1];
-subtract.addEventListener("click", () => {
-    value_create("op", "-");
-    value_create("val");
-    operate("+");
-    display_value("0");
-    console.table(value);
-})
+    })
+}
 
 // Operate button event listener;
 document.getElementById("zeros#2").addEventListener("click", () => {
+    operate();
     display_value(result);
+    clear();
 })
